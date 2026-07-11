@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>瓜瓜果果日程看板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+        
+        .month-section {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .month-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #f0f0f0;
+        }
+        
+        .month-title {
+            font-size: 1.8em;
+            color: #333;
+        }
+        
+        .month-count {
+            background: #667eea;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+        }
+        
+        .events-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .event-card {
+            display: grid;
+            grid-template-columns: 100px 1fr auto;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            align-items: center;
+        }
+        
+        .event-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .event-card.important {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            border-left: 4px solid #e74c3c;
+        }
+        
+        .event-card.travel {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 4px solid #27ae60;
+        }
+        
+        .event-card.school {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #3498db;
+        }
+        
+        .event-card.course {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffe0b2 100%);
+            border-left: 4px solid #f39c12;
+        }
+        
+        .event-date {
+            text-align: center;
+        }
+        
+        .date-day {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+            line-height: 1;
+        }
+        
+        .date-weekday {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 3px;
+        }
+        
+        .event-info {
+            flex: 1;
+        }
+        
+        .event-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .event-details {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .event-time {
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        
+        .event-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+        
+        .tag-important { background: #ffebee; color: #c62828; }
+        .tag-travel { background: #e8f5e9; color: #2e7d32; }
+        .tag-school { background: #e3f2fd; color: #1565c0; }
+        .tag-course { background: #fff9e6; color: #e65100; }
+        .tag-conflict { background: #fff3e0; color: #e65100; }
+        
+        .course-summary {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .course-summary h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        
+        .course-item {
+            background: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85em;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .course-item.conflict {
+            background: #fff3e0;
+            border-color: #ffb74d;
+        }
+        
+        .course-item.normal {
+            background: white;
+            border-color: #e0e0e0;
+        }
+        
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            opacity: 0.8;
+            font-size: 0.9em;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .highlight-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .trip-timeline {
+            background: #f0f7ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .trip-timeline h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+        
+        .timeline-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+        
+        .timeline-date {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 80px;
+        }
+        
+        .timeline-content {
+            flex: 1;
+            color: #666;
+        }
+        
+        @media (max-width: 768px) {
+            .event-card {
+                grid-template-columns: 80px 1fr;
+            }
+            
+            .event-time {
+                grid-column: 1 / -1;
+                text-align: left;
+                padding-left: 80px;
+                margin-top: 5px;
+            }
+            
+            h1 {
+                font-size: 1.8em;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .course-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="text-align: center; margin-bottom: 15px;">
+        <a href="calendar.html" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: 500; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">📅 查看日历视图</a>
+    </div>
+    <div class="container">
+        <header>
+            <h1>📅 瓜瓜果果日程看板</h1>
+            <p class="subtitle">2026年7月-8月 双胞胎成长记录</p>
+        </header>
+        
+        <div class="highlight-box">
+            <h3>⚠️ 近期重要提醒</h3>
+            <p><strong>7/16-8/2 2026年暑期旅游</strong>｜需提前5天（7/11）开始吃红景天</p>
+            <p style="margin-top: 8px; font-size: 0.9em; opacity: 0.95;">行李清单：眼药水💧 垃圾袋🗑️ 儿童泰诺林💊</p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">7</div>
+                <div class="stat-label">语文课冲突（需回放）</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">窦神阅读冲突</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">游泳训练冲突</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">13</div>
+                <div class="stat-label">总冲突课次</div>
+            </div>
+        </div>
+
+        <!-- 7月 -->
+        <div class="month-section">
+            <div class="month-header">
+                <h2 class="month-title">📆 7月</h2>
+                <span class="month-count">重要事项 + 课程安排</span>
+            </div>
+            
+            <div class="events-list">
+                <!-- 红景天提醒 -->
+                <div class="event-card important">
+                    <div class="event-date">
+                        <div class="date-day">11</div>
+                        <div class="date-weekday">周六</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            💊 Luna 开始吃红景天
+                            <span class="event-tag tag-important">提前准备</span>
+                        </div>
+                        <div class="event-details">
+                            进藏前5天开始服用，预防高原反应
+                        </div>
+                    </div>
+                    <div class="event-time">全天</div>
+                </div>
+                
+                <!-- 暑期旅游出发 -->
+                <div class="event-card travel">
+                    <div class="event-date">
+                        <div class="date-day">16</div>
+                        <div class="date-weekday">周四</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            🧳 2026年暑期旅游出发
+                            <span class="event-tag tag-travel">旅行</span>
+                        </div>
+                        <div class="event-details">
+                            吉祥航空 HO1249 07:40 浦东T2 → 重庆<br>
+                            ⚠️ 早班机需 05:30 出发｜全程18天（7/16-8/2）
+                        </div>
+                    </div>
+                    <div class="event-time">07:40</div>
+                </div>
+            </div>
+            
+            <!-- 旅游时间线 -->
+            <div class="trip-timeline">
+                <h3>🗺️ 2026年暑期旅游行程</h3>
+                <div class="timeline-item">
+                    <div class="timeline-date">7/16</div>
+                    <div class="timeline-content">上海 → 重庆（吉祥航空 HO1249 07:40-10:35）</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">7/17</div>
+                    <div class="timeline-content">重庆 → 林芝</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">7/18-23</div>
+                    <div class="timeline-content">林芝停留</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">7/24</div>
+                    <div class="timeline-content">林芝 → 拉萨（火车）</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">7/26</div>
+                    <div class="timeline-content">拉萨 → 西安（东方航空 MU2440 11:20-14:20）</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">7/28</div>
+                    <div class="timeline-content">西安 → 沈阳（南方航空 CZ2076 16:35-19:15）</div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">8/2</div>
+                    <div class="timeline-content">沈阳 → 上海（航班待定）</div>
+                </div>
+            </div>
+            
+            <!-- 7月课程汇总 -->
+            <div class="two-column">
+                <!-- 语文课 -->
+                <div class="course-summary">
+                    <h3>📚 语文暑期梳理课（归一老师）</h3>
+                    <p style="margin-bottom: 15px; color: #666; font-size: 0.85em;">每周一、三、五 17:05-19:05</p>
+                    <div class="course-grid">
+                        <div class="course-item normal">7/1 周三</div>
+                        <div class="course-item normal">7/3 周五</div>
+                        <div class="course-item normal">7/6 周一</div>
+                        <div class="course-item normal">7/8 周三</div>
+                        <div class="course-item normal">7/10 周五</div>
+                        <div class="course-item normal">7/13 周一</div>
+                        <div class="course-item normal">7/15 周三</div>
+                        <div class="course-item conflict">7/17 周五 ⚠️</div>
+                        <div class="course-item conflict">7/20 周一 ⚠️</div>
+                        <div class="course-item conflict">7/22 周三 ⚠️</div>
+                        <div class="course-item conflict">7/24 周五 ⚠️</div>
+                        <div class="course-item conflict">7/27 周一 ⚠️</div>
+                        <div class="course-item conflict">7/29 周三 ⚠️</div>
+                        <div class="course-item conflict">7/31 周五 ⚠️</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                        <span style="background: #fff3e0; padding: 2px 8px; border-radius: 4px;">⚠️ 黄色</span> = 旅行期间，需看回放（7节）
+                    </p>
+                </div>
+                
+                <!-- 窦神阅读 -->
+                <div class="course-summary">
+                    <h3>📖 窦神阅读能力提升</h3>
+                    <p style="margin-bottom: 15px; color: #666; font-size: 0.85em;">每周日 16:30-18:30｜网课</p>
+                    <div class="course-grid">
+                        <div class="course-item normal">7/5 周日</div>
+                        <div class="course-item normal">7/12 周日</div>
+                        <div class="course-item conflict">7/19 周日 ⚠️</div>
+                        <div class="course-item conflict">7/26 周日 ⚠️</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                        <span style="background: #fff3e0; padding: 2px 8px; border-radius: 4px;">⚠️ 黄色</span> = 旅行期间，需看回放（2节）
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 游泳训练 -->
+            <div class="course-summary">
+                <h3>🏊 游泳训练</h3>
+                <p style="margin-bottom: 15px; color: #666; font-size: 0.85em;">每周六 16:00-17:00｜张江德国中心</p>
+                <div class="course-grid">
+                    <div class="course-item normal">7/4 周六</div>
+                    <div class="course-item normal">7/11 周六</div>
+                    <div class="course-item conflict">7/18 周六 ⚠️</div>
+                    <div class="course-item conflict">7/25 周六 ⚠️</div>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                    <span style="background: #fff3e0; padding: 2px 8px; border-radius: 4px;">⚠️ 黄色</span> = 旅行期间，无法参加（2节）
+                </p>
+            </div>
+        </div>
+
+        <!-- 8月 -->
+        <div class="month-section">
+            <div class="month-header">
+                <h2 class="month-title">📆 8月</h2>
+                <span class="month-count">重要事项 + 课程安排</span>
+            </div>
+            
+            <div class="events-list">
+                <!-- 返程 -->
+                <div class="event-card travel">
+                    <div class="event-date">
+                        <div class="date-day">2</div>
+                        <div class="date-weekday">周日</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            🏠 2026年暑期旅游返程
+                            <span class="event-tag tag-travel">旅行</span>
+                        </div>
+                        <div class="event-details">
+                            沈阳桃仙 → 上海（航班待定）
+                        </div>
+                    </div>
+                    <div class="event-time">待定</div>
+                </div>
+                
+                <!-- 瓜瓜牙科 -->
+                <div class="event-card course">
+                    <div class="event-date">
+                        <div class="date-day">4</div>
+                        <div class="date-weekday">周二</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            🦷 瓜瓜牙齿矫正检查
+                        </div>
+                        <div class="event-details">
+                            王艺口腔｜定期复查
+                        </div>
+                    </div>
+                    <div class="event-time">09:30</div>
+                </div>
+                
+                <!-- 入学教育 -->
+                <div class="event-card school">
+                    <div class="event-date">
+                        <div class="date-day">25</div>
+                        <div class="date-weekday">周二</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            🎒 六年级新生入学教育
+                            <span class="event-tag tag-school">开学</span>
+                        </div>
+                        <div class="event-details">
+                            实验东校暑期营势｜穿校服、戴红领巾、穿运动鞋<br>
+                            连续两天（8/25-26）
+                        </div>
+                    </div>
+                    <div class="event-time">08:00-11:30</div>
+                </div>
+                
+                <!-- 返校日 -->
+                <div class="event-card school">
+                    <div class="event-date">
+                        <div class="date-day">31</div>
+                        <div class="date-weekday">周一</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            🏫 新学期返校日
+                            <span class="event-tag tag-school">开学</span>
+                        </div>
+                        <div class="event-details">
+                            收假期作业、布置教室、注册、领书、大扫除<br>
+                            收《快乐大本营》暑期评优内容
+                        </div>
+                    </div>
+                    <div class="event-time">13:00-14:30</div>
+                </div>
+            </div>
+            
+            <!-- 8月课程汇总 -->
+            <div class="two-column">
+                <!-- 语文课 -->
+                <div class="course-summary">
+                    <h3>📚 语文暑期梳理课（归一老师）</h3>
+                    <p style="margin-bottom: 15px; color: #666; font-size: 0.85em;">每周一、三、五 17:05-19:05</p>
+                    <div class="course-grid">
+                        <div class="course-item normal">8/3 周一</div>
+                        <div class="course-item normal">8/5 周三</div>
+                        <div class="course-item normal">8/7 周五</div>
+                        <div class="course-item normal">8/10 周一</div>
+                        <div class="course-item normal">8/12 周三</div>
+                        <div class="course-item normal">8/14 周五</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #27ae60;">
+                        ✅ 已返程，全部正常上课
+                    </p>
+                </div>
+                
+                <!-- 窦神阅读 -->
+                <div class="course-summary">
+                    <h3>📖 窦神阅读能力提升</h3>
+                    <p style="margin-bottom: 15px; color: #666; font-size: 0.85em;">每周日 16:30-18:30｜网课</p>
+                    <div class="course-grid">
+                        <div class="course-item conflict">8/2 周日 ⏳</div>
+                        <div class="course-item normal">8/9 周日</div>
+                        <div class="course-item normal">8/16 周日</div>
+                        <div class="course-item normal">8/23 周日</div>
+                        <div class="course-item normal">8/30 周日</div>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                        <span style="background: #fff3e0; padding: 2px 8px; border-radius: 4px;">⚠️ 8/2</span> = 返程当天，航班待定，不一定能赶上（待确认）
+                    </p>
+                </div>
+            </div>
+            
+            <!-- 游泳训练 -->
+            <div class="course-summary">
+                <h3>🏊 游泳训练</h3>
+                <p style="margin-bottom: 15px; color: #666; font-size: 0.85em;">每周六 16:00-17:00｜张江德国中心</p>
+                <div class="course-grid">
+                    <div class="course-item conflict">8/1 周六 ⚠️</div>
+                    <div class="course-item normal">8/8 周六</div>
+                    <div class="course-item normal">8/15 周六</div>
+                    <div class="course-item normal">8/22 周六</div>
+                    <div class="course-item normal">8/29 周六</div>
+                </div>
+                <p style="margin-top: 10px; font-size: 0.85em; color: #999;">
+                    <span style="background: #fff3e0; padding: 2px 8px; border-radius: 4px;">⚠️ 8/1</span> = 在沈阳，无法参加（1节）
+                </p>
+            </div>
+        </div>
+
+        <!-- 9月开学 -->
+        <div class="month-section">
+            <div class="month-header">
+                <h2 class="month-title">📆 9月开学季</h2>
+                <span class="month-count">新课表启动</span>
+            </div>
+            
+            <div class="events-list">
+                <!-- 正式开学 -->
+                <div class="event-card school">
+                    <div class="event-date">
+                        <div class="date-day">1</div>
+                        <div class="date-weekday">周二</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            🎉 六年级正式开学
+                            <span class="event-tag tag-school">开学</span>
+                        </div>
+                        <div class="event-details">
+                            升旗仪式暨开学典礼｜穿夏季校服、戴红领巾
+                        </div>
+                    </div>
+                    <div class="event-time">07:50 到校</div>
+                </div>
+                
+                <!-- 数学秋季班 -->
+                <div class="event-card course">
+                    <div class="event-date">
+                        <div class="date-day">6</div>
+                        <div class="date-weekday">周日</div>
+                    </div>
+                    <div class="event-info">
+                        <div class="event-title">
+                            📐 乐读数学秋季班开课
+                            <span class="event-tag tag-course">新课</span>
+                        </div>
+                        <div class="event-details">
+                            每周日 09:00-11:30｜主题：因式分解专题<br>
+                            共17次课（9/6-12/27）
+                        </div>
+                    </div>
+                    <div class="event-time">09:00-11:30</div>
+                </div>
+            </div>
+            
+            <!-- 9月课表 -->
+            <div style="margin-top: 25px; padding: 20px; background: #f8f9fa; border-radius: 12px;">
+                <h3 style="margin-bottom: 15px; color: #333;">📋 9月固定课表</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <strong style="color: #667eea;">周六</strong><br>
+                        16:00-17:00 游泳训练
+                    </div>
+                    <div>
+                        <strong style="color: #667eea;">周日</strong><br>
+                        09:00-11:30 数学创新S课<br>
+                        16:30-18:30 窦神阅读
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>📅 数据来源：kids_schedule.md｜更新时间：2026-07-10</p>
+            <p style="margin-top: 5px;">由虾饺 (OpenClaw) 自动生成 🦞</p>
+        </div>
+    </div>
+</body>
+</html>
