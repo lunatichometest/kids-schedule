@@ -1,437 +1,434 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>瓜瓜果果日程日历 - 2026年7-9月</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-        
-        h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            opacity: 0.9;
-            font-size: 1em;
-        }
-        
-        .highlight-box {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-        
-        .calendar-section {
-            background: white;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        
-        .month-title {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-        }
-        
-        .weekday-header {
-            text-align: center;
-            padding: 10px 5px;
-            font-weight: 600;
-            color: #666;
-            font-size: 0.85em;
-        }
-        
-        .weekday-header.weekend {
-            color: #e74c3c;
-        }
-        
-        .calendar-day {
-            min-height: 90px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 6px;
-            background: white;
-            position: relative;
-        }
-        
-        .calendar-day.other-month {
-            background: #f5f5f5;
-            color: #999;
-        }
-        
-        .calendar-day.travel {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-color: #81c784;
-        }
-        
-        .calendar-day.travel-start {
-            background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
-            border-color: #4caf50;
-        }
-        
-        .calendar-day.travel-end {
-            background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
-            border-color: #4caf50;
-        }
-        
-        .calendar-day.school {
-            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-            border-color: #64b5f6;
-        }
-        
-        .calendar-day.important {
-            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
-            border-color: #ef5350;
-        }
-        
-        .day-number {
-            font-weight: 600;
-            font-size: 0.9em;
-            margin-bottom: 4px;
-        }
-        
-        .calendar-day.weekend .day-number {
-            color: #e74c3c;
-        }
-        
-        .day-events {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        
-        .event-dot {
-            font-size: 0.65em;
-            padding: 2px 4px;
-            border-radius: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .event-dot.chinese {
-            background: #fff3e0;
-            color: #e65100;
-        }
-        
-        .event-dot.reading {
-            background: #f3e5f5;
-            color: #7b1fa2;
-        }
-        
-        .event-dot.swim {
-            background: #e0f7fa;
-            color: #00838f;
-        }
-        
-        .event-dot.travel {
-            background: #4caf50;
-            color: white;
-        }
-        
-        .event-dot.school {
-            background: #2196f3;
-            color: white;
-        }
-        
-        .event-dot.important {
-            background: #f44336;
-            color: white;
-        }
-        
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            justify-content: center;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.85em;
-        }
-        
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-        }
-        
-        .footer {
-            text-align: center;
-            color: white;
-            margin-top: 30px;
-            opacity: 0.8;
-            font-size: 0.9em;
-        }
-        
-        @media (max-width: 768px) {
-            .calendar-day {
-                min-height: 70px;
-                padding: 4px;
-            }
-            
-            .day-number {
-                font-size: 0.8em;
-            }
-            
-            .event-dot {
-                font-size: 0.55em;
-                padding: 1px 2px;
-            }
-            
-            h1 {
-                font-size: 1.5em;
-            }
-        }
-    </style>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>瓜瓜果果日程日历 - 2026年7-9月</title>
+ <style>
+ * {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ }
+ 
+ body {
+ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+ background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+ min-height: 100vh;
+ padding: 20px;
+ }
+ 
+ .container {
+ max-width: 1400px;
+ margin: 0 auto;
+ }
+ 
+ header {
+ text-align: center;
+ color: white;
+ margin-bottom: 30px;
+ }
+ 
+ h1 {
+ font-size: 2em;
+ margin-bottom: 10px;
+ }
+ 
+ .subtitle {
+ opacity: 0.9;
+ font-size: 1em;
+ }
+ 
+ .highlight-box {
+ background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+ color: white;
+ padding: 15px 20px;
+ border-radius: 12px;
+ margin-bottom: 25px;
+ text-align: center;
+ }
+ 
+ .calendar-section {
+ background: white;
+ border-radius: 16px;
+ padding: 20px;
+ margin-bottom: 20px;
+ box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+ }
+ 
+ .month-title {
+ font-size: 1.5em;
+ color: #333;
+ margin-bottom: 15px;
+ text-align: center;
+ padding-bottom: 10px;
+ border-bottom: 2px solid #f0f0f0;
+ }
+ 
+ .calendar-grid {
+ display: grid;
+ grid-template-columns: repeat(7, 1fr);
+ gap: 8px;
+ }
+ 
+ .weekday-header {
+ text-align: center;
+ padding: 10px 5px;
+ font-weight: 600;
+ color: #666;
+ font-size: 0.85em;
+ }
+ 
+ .weekday-header.weekend {
+ color: #e74c3c;
+ }
+ 
+ .calendar-day {
+ min-height: 90px;
+ border: 1px solid #e0e0e0;
+ border-radius: 8px;
+ padding: 6px;
+ background: white;
+ position: relative;
+ }
+ 
+ .calendar-day.other-month {
+ background: #f5f5f5;
+ color: #999;
+ }
+ 
+ .calendar-day.travel {
+ background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+ border-color: #81c784;
+ }
+ 
+ .calendar-day.travel-start {
+ background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
+ border-color: #4caf50;
+ }
+ 
+ .calendar-day.travel-end {
+ background: linear-gradient(135deg, #a5d6a7 0%, #81c784 100%);
+ border-color: #4caf50;
+ }
+ 
+ .calendar-day.school {
+ background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+ border-color: #64b5f6;
+ }
+ 
+ .calendar-day.important {
+ background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+ border-color: #ef5350;
+ }
+ 
+ .day-number {
+ font-weight: 600;
+ font-size: 0.9em;
+ margin-bottom: 4px;
+ }
+ 
+ .calendar-day.weekend .day-number {
+ color: #e74c3c;
+ }
+ 
+ .day-events {
+ display: flex;
+ flex-direction: column;
+ gap: 2px;
+ }
+ 
+ .event-dot {
+ font-size: 0.65em;
+ padding: 2px 4px;
+ border-radius: 3px;
+ white-space: nowrap;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ }
+ 
+ .event-dot.chinese {
+ background: #fff3e0;
+ color: #e65100;
+ }
+ 
+ 
+ 
+ .event-dot.swim {
+ background: #e0f7fa;
+ color: #00838f;
+ }
+ 
+ .event-dot.travel {
+ background: #4caf50;
+ color: white;
+ }
+ 
+ .event-dot.school {
+ background: #2196f3;
+ color: white;
+ }
+ 
+ .event-dot.important {
+ background: #f44336;
+ color: white;
+ }
+ 
+ .legend {
+ display: flex;
+ flex-wrap: wrap;
+ gap: 15px;
+ margin-top: 20px;
+ padding: 15px;
+ background: #f8f9fa;
+ border-radius: 10px;
+ justify-content: center;
+ }
+ 
+ .legend-item {
+ display: flex;
+ align-items: center;
+ gap: 6px;
+ font-size: 0.85em;
+ }
+ 
+ .legend-color {
+ width: 16px;
+ height: 16px;
+ border-radius: 4px;
+ border: 1px solid #ddd;
+ }
+ 
+ .footer {
+ text-align: center;
+ color: white;
+ margin-top: 30px;
+ opacity: 0.8;
+ font-size: 0.9em;
+ }
+ 
+ @media (max-width: 768px) {
+ .calendar-day {
+ min-height: 70px;
+ padding: 4px;
+ }
+ 
+ .day-number {
+ font-size: 0.8em;
+ }
+ 
+ .event-dot {
+ font-size: 0.55em;
+ padding: 1px 2px;
+ }
+ 
+ h1 {
+ font-size: 1.5em;
+ }
+ }
+ </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📅 瓜瓜果果日程日历</h1>
-            <p class="subtitle">2026年7月 - 9月</p>
-        </header>
-        
-        <div class="highlight-box">
-            <strong>🧳 2026年暑期旅游</strong>｜7/16 - 8/2｜上海→重庆→林芝→拉萨→西安→沈阳→上海
-        </div>
-        
-        <!-- 7月 -->
-        <div class="calendar-section">
-            <h2 class="month-title">📆 2026年7月</h2>
-            <div class="calendar-grid">
-                <div class="weekday-header">周一</div>
-                <div class="weekday-header">周二</div>
-                <div class="weekday-header">周三</div>
-                <div class="weekday-header">周四</div>
-                <div class="weekday-header">周五</div>
-                <div class="weekday-header weekend">周六</div>
-                <div class="weekday-header weekend">周日</div>
-                
-                <!-- 6月补位 -->
-                <div class="calendar-day other-month"><div class="day-number">29</div></div>
-                <div class="calendar-day other-month"><div class="day-number">30</div></div>
-                
-                <!-- 7月1-31 -->
-                <div class="calendar-day"><div class="day-number">1</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">2</div></div>
-                <div class="calendar-day"><div class="day-number">3</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">4</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">5</div><div class="day-events"><span class="event-dot reading">窦神</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">6</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">7</div></div>
-                <div class="calendar-day"><div class="day-number">8</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">9</div></div>
-                <div class="calendar-day"><div class="day-number">10</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">11</div><div class="day-events"><span class="event-dot swim">游泳</span><span class="event-dot important">红景天</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">12</div><div class="day-events"><span class="event-dot reading">窦神</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">13</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">14</div></div>
-                <div class="calendar-day"><div class="day-number">15</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day travel-start"><div class="day-number">16</div><div class="day-events"><span class="event-dot travel">出发✈️</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">17</div><div class="day-events"><span class="event-dot travel">重庆</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">18</div><div class="day-events"><span class="event-dot travel">林芝</span><span class="event-dot swim" style="text-decoration:line-through">游泳</span></div></div>
-                <div class="calendar-day travel weekend"><div class="day-number">19</div><div class="day-events"><span class="event-dot travel">林芝</span><span class="event-dot reading" style="text-decoration:line-through">窦神</span></div></div>
-                
-                <div class="calendar-day travel"><div class="day-number">20</div><div class="day-events"><span class="event-dot travel">林芝</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">21</div><div class="day-events"><span class="event-dot travel">林芝</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">22</div><div class="day-events"><span class="event-dot travel">林芝</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">23</div><div class="day-events"><span class="event-dot travel">林芝</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">24</div><div class="day-events"><span class="event-dot travel">火车</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">25</div><div class="day-events"><span class="event-dot travel">拉萨</span><span class="event-dot swim" style="text-decoration:line-through">游泳</span></div></div>
-                <div class="calendar-day travel weekend"><div class="day-number">26</div><div class="day-events"><span class="event-dot travel">拉萨</span><span class="event-dot reading" style="text-decoration:line-through">窦神</span></div></div>
-                
-                <div class="calendar-day travel"><div class="day-number">27</div><div class="day-events"><span class="event-dot travel">拉萨</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">28</div><div class="day-events"><span class="event-dot travel">西安</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">29</div><div class="day-events"><span class="event-dot travel">西安</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">30</div><div class="day-events"><span class="event-dot travel">西安</span></div></div>
-                <div class="calendar-day travel"><div class="day-number">31</div><div class="day-events"><span class="event-dot travel">沈阳</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
-            </div>
-        </div>
-        
-        <!-- 8月 -->
-        <div class="calendar-section">
-            <h2 class="month-title">📆 2026年8月</h2>
-            <div class="calendar-grid">
-                <div class="weekday-header">周一</div>
-                <div class="weekday-header">周二</div>
-                <div class="weekday-header">周三</div>
-                <div class="weekday-header">周四</div>
-                <div class="weekday-header">周五</div>
-                <div class="weekday-header weekend">周六</div>
-                <div class="weekday-header weekend">周日</div>
-                
-                <div class="calendar-day travel"><div class="day-number">1</div><div class="day-events"><span class="event-dot travel">沈阳</span><span class="event-dot swim" style="text-decoration:line-through">游泳</span></div></div>
-                <div class="calendar-day travel-end"><div class="day-number">2</div><div class="day-events"><span class="event-dot travel">返程✈️</span><span class="event-dot reading" style="text-decoration:line-through">窦神?</span></div></div>
-                <div class="calendar-day"><div class="day-number">3</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">4</div><div class="day-events"><span class="event-dot important">牙科</span></div></div>
-                <div class="calendar-day"><div class="day-number">5</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">6</div></div>
-                <div class="calendar-day"><div class="day-number">7</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">8</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">9</div><div class="day-events"><span class="event-dot reading">窦神</span></div></div>
-                <div class="calendar-day"><div class="day-number">10</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">11</div></div>
-                <div class="calendar-day"><div class="day-number">12</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                <div class="calendar-day"><div class="day-number">13</div></div>
-                <div class="calendar-day"><div class="day-number">14</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">15</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">16</div><div class="day-events"><span class="event-dot reading">窦神</span></div></div>
-                <div class="calendar-day"><div class="day-number">17</div></div>
-                <div class="calendar-day"><div class="day-number">18</div></div>
-                <div class="calendar-day"><div class="day-number">19</div></div>
-                <div class="calendar-day"><div class="day-number">20</div></div>
-                <div class="calendar-day"><div class="day-number">21</div></div>
-                
-                <div class="calendar-day"><div class="day-number">22</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">23</div><div class="day-events"><span class="event-dot reading">窦神</span></div></div>
-                <div class="calendar-day school"><div class="day-number">24</div></div>
-                <div class="calendar-day school"><div class="day-number">25</div><div class="day-events"><span class="event-dot school">入学教育</span></div></div>
-                <div class="calendar-day school"><div class="day-number">26</div><div class="day-events"><span class="event-dot school">入学教育</span></div></div>
-                <div class="calendar-day"><div class="day-number">27</div></div>
-                <div class="calendar-day"><div class="day-number">28</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                
-                <div class="calendar-day weekend"><div class="day-number">29</div><div class="day-events"><span class="event-dot reading">窦神</span></div></div>
-                <div class="calendar-day"><div class="day-number">30</div></div>
-                <div class="calendar-day school"><div class="day-number">31</div><div class="day-events"><span class="event-dot school">返校日</span></div></div>
-            </div>
-        </div>
-        
-        <!-- 9月 -->
-        <div class="calendar-section">
-            <h2 class="month-title">📆 2026年9月</h2>
-            <div class="calendar-grid">
-                <div class="weekday-header">周一</div>
-                <div class="weekday-header">周二</div>
-                <div class="weekday-header">周三</div>
-                <div class="weekday-header">周四</div>
-                <div class="weekday-header">周五</div>
-                <div class="weekday-header weekend">周六</div>
-                <div class="weekday-header weekend">周日</div>
-                
-                <div class="calendar-day"><div class="day-number">1</div><div class="day-events"><span class="event-dot school">开学🎉</span></div></div>
-                <div class="calendar-day"><div class="day-number">2</div></div>
-                <div class="calendar-day"><div class="day-number">3</div></div>
-                <div class="calendar-day"><div class="day-number">4</div></div>
-                <div class="calendar-day"><div class="day-number">5</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">6</div><div class="day-events"><span class="event-dot chinese">数学</span><span class="event-dot reading">窦神</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">7</div></div>
-                <div class="calendar-day"><div class="day-number">8</div></div>
-                <div class="calendar-day"><div class="day-number">9</div></div>
-                <div class="calendar-day"><div class="day-number">10</div></div>
-                <div class="calendar-day"><div class="day-number">11</div></div>
-                <div class="calendar-day"><div class="day-number">12</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">13</div><div class="day-events"><span class="event-dot chinese">数学</span><span class="event-dot reading">窦神</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">14</div></div>
-                <div class="calendar-day"><div class="day-number">15</div></div>
-                <div class="calendar-day"><div class="day-number">16</div></div>
-                <div class="calendar-day"><div class="day-number">17</div></div>
-                <div class="calendar-day"><div class="day-number">18</div></div>
-                <div class="calendar-day"><div class="day-number">19</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">20</div><div class="day-events"><span class="event-dot chinese">数学</span><span class="event-dot reading">窦神</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">21</div></div>
-                <div class="calendar-day"><div class="day-number">22</div></div>
-                <div class="calendar-day"><div class="day-number">23</div></div>
-                <div class="calendar-day"><div class="day-number">24</div></div>
-                <div class="calendar-day"><div class="day-number">25</div></div>
-                <div class="calendar-day"><div class="day-number">26</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
-                <div class="calendar-day weekend"><div class="day-number">27</div><div class="day-events"><span class="event-dot chinese">数学</span><span class="event-dot reading">窦神</span></div></div>
-                
-                <div class="calendar-day"><div class="day-number">28</div></div>
-                <div class="calendar-day"><div class="day-number">29</div></div>
-                <div class="calendar-day"><div class="day-number">30</div></div>
-            </div>
-        </div>
-        
-        <!-- 图例 -->
-        <div class="legend">
-            <div class="legend-item">
-                <div class="legend-color" style="background: #fff3e0;"></div>
-                <span>语文梳理课</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #f3e5f5;"></div>
-                <span>窦神阅读</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #e0f7fa;"></div>
-                <span>游泳训练</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #e8f5e9;"></div>
-                <span>旅行期间</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #e3f2fd;"></div>
-                <span>学校事项</span>
-            </div>
-            <div class="legend-item">
-                <div class="legend-color" style="background: #fff5f5;"></div>
-                <span>重要提醒</span>
-            </div>
-            <div class="legend-item">
-                <span style="text-decoration: line-through; color: #999;">删除线</span>
-                <span>= 冲突课程</span>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>📅 数据来源：kids_schedule.md｜更新时间：2026-07-10</p>
-            <p style="margin-top: 5px;">由虾饺 (OpenClaw) 自动生成 🦞</p>
-        </div>
-    </div>
+ <div class="container">
+ <header>
+ <h1>📅 瓜瓜果果日程日历</h1>
+ <p class="subtitle">2026年7月 - 9月</p>
+ </header>
+ 
+ <div class="highlight-box">
+ <strong>🧳 2026年暑期旅游</strong>｜7/16 - 8/2｜上海→重庆→林芝→拉萨→西安→沈阳→上海
+ </div>
+ 
+ <!-- 7月 -->
+ <div class="calendar-section">
+ <h2 class="month-title">📆 2026年7月</h2>
+ <div class="calendar-grid">
+ <div class="weekday-header">周一</div>
+ <div class="weekday-header">周二</div>
+ <div class="weekday-header">周三</div>
+ <div class="weekday-header">周四</div>
+ <div class="weekday-header">周五</div>
+ <div class="weekday-header weekend">周六</div>
+ <div class="weekday-header weekend">周日</div>
+ 
+ <!-- 6月补位 -->
+ <div class="calendar-day other-month"><div class="day-number">29</div></div>
+ <div class="calendar-day other-month"><div class="day-number">30</div></div>
+ 
+ <!-- 7月1-31 -->
+ <div class="calendar-day"><div class="day-number">1</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">2</div></div>
+ <div class="calendar-day"><div class="day-number">3</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">4</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">5</div><div class="day-events"></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">6</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">7</div></div>
+ <div class="calendar-day"><div class="day-number">8</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">9</div></div>
+ <div class="calendar-day"><div class="day-number">10</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">11</div><div class="day-events"><span class="event-dot swim">游泳</span><span class="event-dot important">红景天</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">12</div><div class="day-events"></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">13</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">14</div></div>
+ <div class="calendar-day"><div class="day-number">15</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day travel-start"><div class="day-number">16</div><div class="day-events"><span class="event-dot travel">出发✈️</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">17</div><div class="day-events"><span class="event-dot travel">重庆</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">18</div><div class="day-events"><span class="event-dot travel">林芝</span><span class="event-dot swim" style="text-decoration:line-through">游泳</span></div></div>
+ <div class="calendar-day travel weekend"><div class="day-number">19</div><div class="day-events"><span class="event-dot travel">林芝</span></div></div>
+ 
+ <div class="calendar-day travel"><div class="day-number">20</div><div class="day-events"><span class="event-dot travel">林芝</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">21</div><div class="day-events"><span class="event-dot travel">林芝</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">22</div><div class="day-events"><span class="event-dot travel">林芝</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">23</div><div class="day-events"><span class="event-dot travel">林芝</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">24</div><div class="day-events"><span class="event-dot travel">火车</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">25</div><div class="day-events"><span class="event-dot travel">拉萨</span><span class="event-dot swim" style="text-decoration:line-through">游泳</span></div></div>
+ <div class="calendar-day travel weekend"><div class="day-number">26</div><div class="day-events"><span class="event-dot travel">拉萨</span></div></div>
+ 
+ <div class="calendar-day travel"><div class="day-number">27</div><div class="day-events"><span class="event-dot travel">拉萨</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">28</div><div class="day-events"><span class="event-dot travel">西安</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">29</div><div class="day-events"><span class="event-dot travel">西安</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">30</div><div class="day-events"><span class="event-dot travel">西安</span></div></div>
+ <div class="calendar-day travel"><div class="day-number">31</div><div class="day-events"><span class="event-dot travel">沈阳</span><span class="event-dot chinese" style="text-decoration:line-through">语文</span></div></div>
+ </div>
+ </div>
+ 
+ <!-- 8月 -->
+ <div class="calendar-section">
+ <h2 class="month-title">📆 2026年8月</h2>
+ <div class="calendar-grid">
+ <div class="weekday-header">周一</div>
+ <div class="weekday-header">周二</div>
+ <div class="weekday-header">周三</div>
+ <div class="weekday-header">周四</div>
+ <div class="weekday-header">周五</div>
+ <div class="weekday-header weekend">周六</div>
+ <div class="weekday-header weekend">周日</div>
+ 
+ <div class="calendar-day travel"><div class="day-number">1</div><div class="day-events"><span class="event-dot travel">沈阳</span><span class="event-dot swim" style="text-decoration:line-through">游泳</span></div></div>
+ <div class="calendar-day travel-end"><div class="day-number">2</div><div class="day-events"><span class="event-dot travel">返程✈️</span></div></div>
+ <div class="calendar-day"><div class="day-number">3</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">4</div><div class="day-events"><span class="event-dot important">牙科</span></div></div>
+ <div class="calendar-day"><div class="day-number">5</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">6</div></div>
+ <div class="calendar-day"><div class="day-number">7</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">8</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">9</div><div class="day-events"></div></div>
+ <div class="calendar-day"><div class="day-number">10</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">11</div></div>
+ <div class="calendar-day"><div class="day-number">12</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ <div class="calendar-day"><div class="day-number">13</div></div>
+ <div class="calendar-day"><div class="day-number">14</div><div class="day-events"><span class="event-dot chinese">语文</span></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">15</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">16</div><div class="day-events"></div></div>
+ <div class="calendar-day"><div class="day-number">17</div></div>
+ <div class="calendar-day"><div class="day-number">18</div></div>
+ <div class="calendar-day"><div class="day-number">19</div></div>
+ <div class="calendar-day"><div class="day-number">20</div></div>
+ <div class="calendar-day"><div class="day-number">21</div></div>
+ 
+ <div class="calendar-day"><div class="day-number">22</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">23</div><div class="day-events"></div></div>
+ <div class="calendar-day school"><div class="day-number">24</div></div>
+ <div class="calendar-day school"><div class="day-number">25</div><div class="day-events"><span class="event-dot school">入学教育</span></div></div>
+ <div class="calendar-day school"><div class="day-number">26</div><div class="day-events"><span class="event-dot school">入学教育</span></div></div>
+ <div class="calendar-day"><div class="day-number">27</div></div>
+ <div class="calendar-day"><div class="day-number">28</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ 
+ <div class="calendar-day weekend"><div class="day-number">29</div><div class="day-events"></div></div>
+ <div class="calendar-day"><div class="day-number">30</div></div>
+ <div class="calendar-day school"><div class="day-number">31</div><div class="day-events"><span class="event-dot school">返校日</span></div></div>
+ </div>
+ </div>
+ 
+ <!-- 9月 -->
+ <div class="calendar-section">
+ <h2 class="month-title">📆 2026年9月</h2>
+ <div class="calendar-grid">
+ <div class="weekday-header">周一</div>
+ <div class="weekday-header">周二</div>
+ <div class="weekday-header">周三</div>
+ <div class="weekday-header">周四</div>
+ <div class="weekday-header">周五</div>
+ <div class="weekday-header weekend">周六</div>
+ <div class="weekday-header weekend">周日</div>
+ 
+ <div class="calendar-day"><div class="day-number">1</div><div class="day-events"><span class="event-dot school">开学🎉</span></div></div>
+ <div class="calendar-day"><div class="day-number">2</div></div>
+ <div class="calendar-day"><div class="day-number">3</div></div>
+ <div class="calendar-day"><div class="day-number">4</div></div>
+ <div class="calendar-day"><div class="day-number">5</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">6</div><div class="day-events"><span class="event-dot chinese">数学</span></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">7</div></div>
+ <div class="calendar-day"><div class="day-number">8</div></div>
+ <div class="calendar-day"><div class="day-number">9</div></div>
+ <div class="calendar-day"><div class="day-number">10</div></div>
+ <div class="calendar-day"><div class="day-number">11</div></div>
+ <div class="calendar-day"><div class="day-number">12</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">13</div><div class="day-events"><span class="event-dot chinese">数学</span></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">14</div></div>
+ <div class="calendar-day"><div class="day-number">15</div></div>
+ <div class="calendar-day"><div class="day-number">16</div></div>
+ <div class="calendar-day"><div class="day-number">17</div></div>
+ <div class="calendar-day"><div class="day-number">18</div></div>
+ <div class="calendar-day"><div class="day-number">19</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">20</div><div class="day-events"><span class="event-dot chinese">数学</span></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">21</div></div>
+ <div class="calendar-day"><div class="day-number">22</div></div>
+ <div class="calendar-day"><div class="day-number">23</div></div>
+ <div class="calendar-day"><div class="day-number">24</div></div>
+ <div class="calendar-day"><div class="day-number">25</div></div>
+ <div class="calendar-day"><div class="day-number">26</div><div class="day-events"><span class="event-dot swim">游泳</span></div></div>
+ <div class="calendar-day weekend"><div class="day-number">27</div><div class="day-events"><span class="event-dot chinese">数学</span></div></div>
+ 
+ <div class="calendar-day"><div class="day-number">28</div></div>
+ <div class="calendar-day"><div class="day-number">29</div></div>
+ <div class="calendar-day"><div class="day-number">30</div></div>
+ </div>
+ </div>
+ 
+ <!-- 图例 -->
+ <div class="legend">
+ <div class="legend-item">
+ <div class="legend-color" style="background: #fff3e0;"></div>
+ <span>语文梳理课</span>
+ </div>
+ <div class="legend-item">
+ <div class="legend-color" style="background: #f3e5f5;"></div>
+ 
+ </div>
+ <div class="legend-item">
+ <div class="legend-color" style="background: #e0f7fa;"></div>
+ <span>游泳训练</span>
+ </div>
+ <div class="legend-item">
+ <div class="legend-color" style="background: #e8f5e9;"></div>
+ <span>旅行期间</span>
+ </div>
+ <div class="legend-item">
+ <div class="legend-color" style="background: #e3f2fd;"></div>
+ <span>学校事项</span>
+ </div>
+ <div class="legend-item">
+ <div class="legend-color" style="background: #fff5f5;"></div>
+ <span>重要提醒</span>
+ </div>
+ <div class="legend-item">
+ <span style="text-decoration: line-through; color: #999;">删除线</span>
+ <span>= 冲突课程</span>
+ </div>
+ </div>
+ 
+ <div class="footer">
+ <p>📅 数据来源：kids_schedule.md｜更新时间：2026-07-10</p>
+ <p style="margin-top: 5px;">由虾饺 (OpenClaw) 自动生成 🦞</p>
+ </div>
+ </div>
 </body>
 </html>
